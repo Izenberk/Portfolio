@@ -1,41 +1,56 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-
-# Environment variables (CRITICAL - contains secrets!)
-.env
-.env.local
-.env.*.local
-apps/api/.env
-apps/web/.env.local
-
-# Build outputs
-dist/
-build/
-.next/
-out/
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-pnpm-debug.log*
-
-# IDE
+# --- IDE & OS ---
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Testing
+# --- Environment Variables (Secrets) ---
+.env
+.env.local
+.env.*.local
+# Adding Go-specific env if you use it
+*.env
+
+# --- Node.js & Next.js (Frontend) ---
+node_modules/
+.pnp
+.pnp.js
+.next/
+out/
+build/
+dist/
+.cache/
+
+# --- Golang (Backend) ---
+# Compiled binaries
+bin/
+backend-go/bin/
+# Dependency directories
+vendor/
+# Executables
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+# Go test coverage
+*.out
+
+# --- Logs & Debug ---
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Testing & Coverage ---
 coverage/
 .nyc_output/
 
-# Temporary files
+# --- Temporary/Others ---
 *.tmp
-.cache/
+*.temp
+.vercel
