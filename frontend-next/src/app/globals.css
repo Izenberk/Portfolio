@@ -1,0 +1,161 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --animate-aurora: aurora 8s ease-in-out infinite alternate;
+
+  @keyframes aurora {
+    0% {
+      background-position: 0% 50%;
+      transform: rotate(-5deg) scale(0.9);
+    }
+    25% {
+      background-position: 50% 100%;
+      transform: rotate(5deg) scale(1.1);
+    }
+    50% {
+      background-position: 100% 50%;
+      transform: rotate(-3deg) scale(0.95);
+    }
+    75% {
+      background-position: 50% 0%;
+      transform: rotate(3deg) scale(1.05);
+    }
+    100% {
+      background-position: 0% 50%;
+      transform: rotate(-5deg) scale(0.9);
+    }
+  }
+
+  --animate-rippling: rippling var(--duration) ease-out;
+
+  @keyframes rippling {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(255,255,255,0.5); }
+  50%      { box-shadow: 0 0 12px rgba(255,255,255,0.9); }
+}
+
+.skill-icon:hover {
+  animation: glow 1.2s ease-in-out infinite;
+}
+
+.group:hover .skill-icon {
+  animation: glow 1.2s ease-in-out infinite;
+}
+
+.group:focus-within .skill-icon {
+  animation: glow 1.2s ease-in-out infinite;
+}
+
+section { scroll-margin-top: 6rem; }
+@media (max-width: 640px) { section { scroll-margin-top: 4.5rem; } }
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* Core */
+  --background: #0F172A;
+  --foreground: #EDEDED;
+  --card: #1E1E1E;
+  --card-foreground: #EDEDED;
+  --popover: #1E1E1E;
+  --popover-foreground: #EDEDED;
+
+  /* Brand */
+  --primary: #2C5DE3;
+  --primary-foreground: #FFFFFF;
+  --secondary: #2C2C2C;
+  --secondary-foreground: #EDEDED;
+  --muted: #2C2C2C;
+  --muted-foreground: #A1A1AA;
+  --accent: #2C5DE3;
+  --accent-foreground: #FFFFFF;
+
+  /* States */
+  --destructive: #DC2626;
+  --border: #2C2C2C;
+  --input: #2C2C2C;
+  --ring: #2C5DE3;
+
+  /* Charts */
+  --chart-1: #3B82F6;
+  --chart-2: #10B981;
+  --chart-3: #F59E0B;
+  --chart-4: #EF4444;
+  --chart-5: #8B5CF6;
+
+  /* Sidebar */
+  --sidebar: #1E1E1E;
+  --sidebar-foreground: #EDEDED;
+  --sidebar-primary: #2C5DE3;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #2C2C2C;
+  --sidebar-accent-foreground: #EDEDED;
+  --sidebar-border: #2C2C2C;
+  --sidebar-ring: #2C5DE3;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
