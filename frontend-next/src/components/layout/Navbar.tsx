@@ -48,10 +48,7 @@ export default function Navbar() {
 
     return (
         <nav
-            className="fixed top-4 left-1/2 z-50 -translate-x-1/2
-                        flex gap-6 rounded-2xl px-6 py-3 shadow-lg
-                        border border-[var(--border)] text-white
-                        transition-colors duration-300"
+            className="fixed top-4 left-1/2 z-50 -translate-x-1/2 flex gap-6 rounded-2xl px-6 py-3 shadow-lg border border-[var(--border)] text-white transition-colors duration-300"
             style={{
                 background: scrolled
                     ? "linear-gradient(90deg, rgba(24,51,125,0.8) 0%, rgba(44,93,227,0.8) 100%)"

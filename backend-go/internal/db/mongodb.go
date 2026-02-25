@@ -3,14 +3,19 @@ package db
 import (
     "context"
     "log"
+    "os"
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // ConnectDB must be Capitalized to be exported!
 func ConnectDB() *mongo.Client {
-    // Replace with your actual Mongo URI (e.g., "mongodb://localhost:27017")
-    clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+    uri := os.Getenv("MONGODB_URI")
+      if uri == "" {
+          uri = "mongodb://localhost:27017"
+      }
+
+      clientOptions := options.Client().ApplyURI(uri)
 
     client, err := mongo.Connect(context.TODO(), clientOptions)
     if err != nil {

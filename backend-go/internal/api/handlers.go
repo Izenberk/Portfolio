@@ -16,44 +16,51 @@ func ptr(s string) *string {
 }
 
 type Server struct{
-	Repo *repository.ProjectRepository
+	Repo 		*repository.ProjectRepository
+	SkillRepo 	*repository.SkillRepository
+	ExpRepo 	*repository.ExperienceRepository
 }
 
-func NewServer(repo *repository.ProjectRepository) *Server {
+func NewServer(
+		repo 		*repository.ProjectRepository,
+		skillRepo 	*repository.SkillRepository,
+		expRepo 	*repository.ExperienceRepository,
+	) *Server {
 	return &Server{
 		Repo: repo,
+		SkillRepo: skillRepo,
+		ExpRepo: expRepo,
 	}
 }
 
 // GetProjects - Matches the operationId in yaml
 func (s *Server) GetProjects(c *gin.Context) {
-	mockProjects := []Project{
-		{
-			Id:      "1",
-			Slug:    "go-portfolio",
-			Title:   "Go Backend",
-			Summary: "High-performance API built with Go and Gin",
-			Stack:   []string{"Go", "MongoDB", "OpenAPI"},
-			Links: struct {
-				Demo *string `json:"demo,omitempty"`
-				Repo *string `json:"repo,omitempty"`
-			}{
-				Demo: ptr("https://demo.com"), // Becomes *string
-				Repo: ptr(""),                 // Becomes nil, field disappears!
-			},
-		},
+	dbProjects, err := s.Repo.GetAll(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch projects"})
+		return
 	}
-	c.JSON(http.StatusOK, mockProjects)
-}
-
-// GetExperience - Matches the operationId in yaml
-func (s *Server) GetExperience(c *gin.Context) {
-	c.JSON(http.StatusOK, []Experience{}) // Empty array for now
+	c.JSON(http.StatusOK, dbProjects)
 }
 
 // GetSkills - Matches the operationId in yaml
 func (s *Server) GetSkills(c *gin.Context) {
-	c.JSON(http.StatusOK, []SkillCategory{}) // Empty array for now
+	skills, err := s.SkillRepo.GetAll(c.Request.Context())
+	if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch skills"})
+			return
+	}
+	c.JSON(http.StatusOK, skills)
+}
+
+// GetExperience - Matches the operationId in yaml
+func (s *Server) GetExperience(c *gin.Context) {
+	experience, err := s.ExpRepo.GetAll(c.Request.Context())
+	if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch experience"})
+			return
+	}
+	c.JSON(http.StatusOK, experience)
 }
 
 // PostContact - Matches the operationId in yaml

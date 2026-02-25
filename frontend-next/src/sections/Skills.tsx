@@ -108,12 +108,7 @@ function SkillRow({
       >
         {/* Badge icon */}
         <span
-          className="
-            skill-icon
-            inline-flex items-center justify-center rounded-lg
-            w-11 h-11 md:w-12 md:h-12
-            ring-1 ring-inset transition-all duration-300
-          "
+          className="skill-icon inline-flex items-center justify-center rounded-lg w-11 h-11 md:w-12 md:h-12 ring-1 ring-inset transition-all duration-300"
           style={{
             backgroundColor: brandColor ? `${brandColor}15` : 'hsl(var(--primary) / 0.1)',
             color: brandColor || 'hsl(var(--primary))',
@@ -154,10 +149,7 @@ export default function Skills({ data }: { data: SkillCategory[] }) {
         {data.map((category) => (
           <Card
             key={category.title}
-            className="
-              group transition-all duration-300 border border-border/80 bg-card/50
-              hover:-translate-y-1 hover:bg-primary/25
-            "
+            className="group transition-all duration-300 border border-border/80 bg-card/50 hover:-translate-y-1 hover:bg-primary/25"
           >
             <CardHeader className="pb-2 md:pb-3">
               <CardTitle className="text-xl md:text-2xl">{category.title}</CardTitle>
@@ -219,11 +211,7 @@ export default function Skills({ data }: { data: SkillCategory[] }) {
                       .map(project => (
                         <span
                           key={project}
-                          className="
-                            inline-flex items-center rounded-full 
-                            bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground
-                            border border-border/50
-                          "
+                          className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground border border-border/50"
                         >
                           {project}
                         </span>

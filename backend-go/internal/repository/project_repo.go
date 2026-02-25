@@ -3,8 +3,18 @@ package repository
 import (
     "context"
     "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/bson/primitive"
     "go.mongodb.org/mongo-driver/mongo"
 )
+
+// We define a local DB model to handle BSON tags specifically for Mongo
+type DBProject struct {
+    ID      primitive.ObjectID  `bson:"_id,omitempty"`
+    Title   string              `bson:"title"`
+    Slug    string              `bson:"slug"`
+    Summary string              `bson:"summary"`
+    Stack   []string            `bson:"stack"`
+}
 
 type ProjectRepository struct {
     collection *mongo.Collection

@@ -3,7 +3,7 @@ import type { Project } from '@/types/project';
 import type { SkillCategory, ExperienceItem } from '@/types/sections';
 
 export async function getProjects(): Promise<Project[]> {
-  const res = await fetch(`${API_URL}/api/projects`, {
+  const res = await fetch(`${API_URL}/projects`, {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Failed to fetch projects');
@@ -11,7 +11,7 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getSkills(): Promise<SkillCategory[]> {
-  const res = await fetch(`${API_URL}/api/skills`, {
+  const res = await fetch(`${API_URL}/skills`, {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Failed to fetch skills');
@@ -19,7 +19,7 @@ export async function getSkills(): Promise<SkillCategory[]> {
 }
 
 export async function getExperience(): Promise<ExperienceItem[]> {
-  const res = await fetch(`${API_URL}/api/experience`, {
+  const res = await fetch(`${API_URL}/experience`, {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Failed to fetch experience');
@@ -31,7 +31,7 @@ export async function postContact(data: {
   email: string;
   message: string;
 }): Promise<void> {
-  const res = await fetch(`${API_URL}/api/contact`, {
+  const res = await fetch(`${API_URL}/contact`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
