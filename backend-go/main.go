@@ -30,11 +30,12 @@ func main() {
 
     database := client.Database("portfolio")
 
-    // 3. Initialize Repo and Server
+    // 3. Initialize Repos and Server
     repo := repository.NewProjectRepository(database)
     skillRepo := repository.NewSkillRepository(database)
     expRepo := repository.NewExperienceRepository(database)
-    server := api.NewServer(repo, skillRepo, expRepo)
+    contactRepo := repository.NewContactRepository(database)
+    server := api.NewServer(repo, skillRepo, expRepo, contactRepo)
 
     r := gin.Default()
     // --- 1. PLUG IN CORS MIDDLEWARE HERE ---
@@ -52,8 +53,30 @@ func main() {
         c.Next()
     })
 
-    // --- 2. REGISTER HANDLERS ---
-    api.RegisterHandlers(r, server)
+    // --- 2. REGISTER HANDLERS WITH JWT MIDDLEWARE ---
+    api.RegisterHandlersWithOptions(r, server, api.GinServerOptions{
+        Middlewares: []api.MiddlewareFunc{
+            func(c *gin.Context) {
+                // Skip auth for public routes
+                path := c.Request.URL.Path
+                method := c.Request.Method
+
+                // Public GET endpoints + login + contact POST
+                if method == "GET" && (path == "/projects" || path == "/skills" || path == "/experience") {
+                    return
+                }
+                if path == "/auth/login" {
+                    return
+                }
+                if method == "POST" && path == "/contact" {
+                    return
+                }
+
+                // Everything else requires JWT
+                api.JWTAuthMiddleware()(c)
+            },
+        },
+    })
 
     log.Println("🚀 Portfolio Server starting on http://localhost:8080")
     r.Run(":8080")

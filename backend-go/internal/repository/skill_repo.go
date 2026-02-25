@@ -43,3 +43,17 @@ func (r *SkillRepository) GetAll(ctx context.Context) ([]SkillCategory, error) {
 	}
 	return results, nil
 }
+
+func (r *SkillRepository) Create(ctx context.Context, category SkillCategory) (*mongo.InsertOneResult, error) {
+	return r.collection.InsertOne(ctx, category)
+}
+
+func (r *SkillRepository) Update(ctx context.Context, id primitive.ObjectID, category SkillCategory) error {
+	_, err := r.collection.ReplaceOne(ctx, bson.M{"_id": id}, category)
+	return err
+}
+
+func (r *SkillRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
+	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}

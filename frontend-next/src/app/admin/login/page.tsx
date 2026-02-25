@@ -14,12 +14,14 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error("Invalid credentials");
+      const data = await res.json();
+      localStorage.setItem("admin_token", data.token);
       window.location.href = "/admin";
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed");

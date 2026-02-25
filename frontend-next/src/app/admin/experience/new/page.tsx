@@ -15,7 +15,7 @@ export default function NewExperiencePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/experience`, {
+      const res = await fetch(`${API_URL}/experience`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company, role, startDate, endDate: endDate || undefined, description }),

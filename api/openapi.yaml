@@ -2,14 +2,39 @@ openapi: 3.0.3
 info:
   title: Portfolio API
   description: Backend for Portfolio - Migrated from TS to Go
-  version: 1.0.0
+  version: 1.1.0
 
 servers:
   - url: http://localhost:8080
     description: Local Development Server
 
 paths:
-  # --- Projects ---
+  # ─── Auth ───
+  /auth/login:
+    post:
+      summary: Admin login
+      operationId: postLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  # ─── Projects ───
   /projects:
     get:
       summary: Get all portfolio projects
@@ -23,8 +48,62 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Project'
+    post:
+      summary: Create a new project
+      operationId: createProject
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
 
-  # --- Experience ---
+  /projects/{id}:
+    put:
+      summary: Update a project
+      operationId: updateProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    delete:
+      summary: Delete a project
+      operationId: deleteProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Project deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  # ─── Experience ───
   /experience:
     get:
       summary: Get work experience list
@@ -38,8 +117,62 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Experience'
+    post:
+      summary: Create a new experience entry
+      operationId: createExperience
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Experience'
+      responses:
+        '201':
+          description: Experience created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
 
-  # --- Skills ---
+  /experience/{id}:
+    put:
+      summary: Update an experience entry
+      operationId: updateExperience
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Experience'
+      responses:
+        '200':
+          description: Experience updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experience'
+    delete:
+      summary: Delete an experience entry
+      operationId: deleteExperience
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Experience deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  # ─── Skills ───
   /skills:
     get:
       summary: Get skills categorized
@@ -53,9 +186,77 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SkillCategory'
+    post:
+      summary: Create a new skill category
+      operationId: createSkillCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillCategory'
+      responses:
+        '201':
+          description: Skill category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillCategory'
 
-  # --- Contact ---
+  /skills/{id}:
+    put:
+      summary: Update a skill category
+      operationId: updateSkillCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillCategory'
+      responses:
+        '200':
+          description: Skill category updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillCategory'
+    delete:
+      summary: Delete a skill category
+      operationId: deleteSkillCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Skill category deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  # ─── Contact ───
   /contact:
+    get:
+      summary: List contact messages (admin)
+      operationId: getContactMessages
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of contact messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContactRequest'
     post:
       summary: Submit contact form
       operationId: postContact
@@ -74,15 +275,46 @@ paths:
                 $ref: '#/components/schemas/MessageResponse'
 
 components:
+  # ─── Security Schemes ───
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # ─── Reusable Parameters ───
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: MongoDB ObjectID as string
+
   schemas:
-    # --- Projects ---
+    # ─── Auth ───
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    LoginResponse:
+      type: object
+      required: [token]
+      properties:
+        token: { type: string }
+
+    # ─── Projects ───
     Project:
       type: object
       required: [id, slug, title, summary, stack, links]
       properties:
         id:
           type: string
-          example: "65b2f1234567890abcdef123" # This will be the string version of Mongo _id
+          example: "65b2f1234567890abcdef123"
         slug: { type: string }
         title: { type: string }
         summary: { type: string }
@@ -97,7 +329,7 @@ components:
         contributors: { type: string }
         order: { type: integer }
 
-    # --- Experience ---
+    # ─── Experience ───
     Experience:
       type: object
       required: [id, role, company, start]
@@ -113,7 +345,7 @@ components:
         description: { type: array, items: { type: string } }
         order: { type: integer }
 
-    # --- Skills ---
+    # ─── Skills ───
     SkillItem:
       type: object
       required: [name, level]
@@ -132,7 +364,7 @@ components:
         items: { type: array, items: { $ref: '#/components/schemas/SkillItem' } }
         order: { type: integer }
 
-    # --- Auth User ---
+    # ─── Auth User ───
     User:
       type: object
       required: [id, email]
@@ -140,7 +372,7 @@ components:
         id: { type: string }
         email: { type: string, format: email }
 
-    # --- Contact Form ---
+    # ─── Contact Form ───
     ContactRequest:
       type: object
       required: [name, email, message]
@@ -150,7 +382,7 @@ components:
         subject: { type: string }
         message: { type: string }
 
-    # --- Standard Response ---
+    # ─── Standard Response ───
     MessageResponse:
       type: object
       required: [message]

@@ -4,8 +4,16 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
+)
+
+const (
+	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
 // ContactRequest defines model for ContactRequest.
@@ -28,6 +36,17 @@ type Experience struct {
 	Start       string    `json:"start"`
 	Tags        *[]string `json:"tags,omitempty"`
 	Url         *string   `json:"url,omitempty"`
+}
+
+// LoginRequest defines model for LoginRequest.
+type LoginRequest struct {
+	Email    openapi_types.Email `json:"email"`
+	Password string              `json:"password"`
+}
+
+// LoginResponse defines model for LoginResponse.
+type LoginResponse struct {
+	Token string `json:"token"`
 }
 
 // MessageResponse defines model for MessageResponse.
@@ -68,23 +87,80 @@ type SkillItem struct {
 	Name        string  `json:"name"`
 }
 
+// IdParam defines model for IdParam.
+type IdParam = string
+
+// PostLoginJSONRequestBody defines body for PostLogin for application/json ContentType.
+type PostLoginJSONRequestBody = LoginRequest
+
 // PostContactJSONRequestBody defines body for PostContact for application/json ContentType.
 type PostContactJSONRequestBody = ContactRequest
 
+// CreateExperienceJSONRequestBody defines body for CreateExperience for application/json ContentType.
+type CreateExperienceJSONRequestBody = Experience
+
+// UpdateExperienceJSONRequestBody defines body for UpdateExperience for application/json ContentType.
+type UpdateExperienceJSONRequestBody = Experience
+
+// CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
+type CreateProjectJSONRequestBody = Project
+
+// UpdateProjectJSONRequestBody defines body for UpdateProject for application/json ContentType.
+type UpdateProjectJSONRequestBody = Project
+
+// CreateSkillCategoryJSONRequestBody defines body for CreateSkillCategory for application/json ContentType.
+type CreateSkillCategoryJSONRequestBody = SkillCategory
+
+// UpdateSkillCategoryJSONRequestBody defines body for UpdateSkillCategory for application/json ContentType.
+type UpdateSkillCategoryJSONRequestBody = SkillCategory
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Admin login
+	// (POST /auth/login)
+	PostLogin(c *gin.Context)
+	// List contact messages (admin)
+	// (GET /contact)
+	GetContactMessages(c *gin.Context)
 	// Submit contact form
 	// (POST /contact)
 	PostContact(c *gin.Context)
 	// Get work experience list
 	// (GET /experience)
 	GetExperience(c *gin.Context)
+	// Create a new experience entry
+	// (POST /experience)
+	CreateExperience(c *gin.Context)
+	// Delete an experience entry
+	// (DELETE /experience/{id})
+	DeleteExperience(c *gin.Context, id IdParam)
+	// Update an experience entry
+	// (PUT /experience/{id})
+	UpdateExperience(c *gin.Context, id IdParam)
 	// Get all portfolio projects
 	// (GET /projects)
 	GetProjects(c *gin.Context)
+	// Create a new project
+	// (POST /projects)
+	CreateProject(c *gin.Context)
+	// Delete a project
+	// (DELETE /projects/{id})
+	DeleteProject(c *gin.Context, id IdParam)
+	// Update a project
+	// (PUT /projects/{id})
+	UpdateProject(c *gin.Context, id IdParam)
 	// Get skills categorized
 	// (GET /skills)
 	GetSkills(c *gin.Context)
+	// Create a new skill category
+	// (POST /skills)
+	CreateSkillCategory(c *gin.Context)
+	// Delete a skill category
+	// (DELETE /skills/{id})
+	DeleteSkillCategory(c *gin.Context, id IdParam)
+	// Update a skill category
+	// (PUT /skills/{id})
+	UpdateSkillCategory(c *gin.Context, id IdParam)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -95,6 +171,34 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// PostLogin operation middleware
+func (siw *ServerInterfaceWrapper) PostLogin(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.PostLogin(c)
+}
+
+// GetContactMessages operation middleware
+func (siw *ServerInterfaceWrapper) GetContactMessages(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetContactMessages(c)
+}
 
 // PostContact operation middleware
 func (siw *ServerInterfaceWrapper) PostContact(c *gin.Context) {
@@ -122,6 +226,73 @@ func (siw *ServerInterfaceWrapper) GetExperience(c *gin.Context) {
 	siw.Handler.GetExperience(c)
 }
 
+// CreateExperience operation middleware
+func (siw *ServerInterfaceWrapper) CreateExperience(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateExperience(c)
+}
+
+// DeleteExperience operation middleware
+func (siw *ServerInterfaceWrapper) DeleteExperience(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteExperience(c, id)
+}
+
+// UpdateExperience operation middleware
+func (siw *ServerInterfaceWrapper) UpdateExperience(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateExperience(c, id)
+}
+
 // GetProjects operation middleware
 func (siw *ServerInterfaceWrapper) GetProjects(c *gin.Context) {
 
@@ -135,6 +306,73 @@ func (siw *ServerInterfaceWrapper) GetProjects(c *gin.Context) {
 	siw.Handler.GetProjects(c)
 }
 
+// CreateProject operation middleware
+func (siw *ServerInterfaceWrapper) CreateProject(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateProject(c)
+}
+
+// DeleteProject operation middleware
+func (siw *ServerInterfaceWrapper) DeleteProject(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteProject(c, id)
+}
+
+// UpdateProject operation middleware
+func (siw *ServerInterfaceWrapper) UpdateProject(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateProject(c, id)
+}
+
 // GetSkills operation middleware
 func (siw *ServerInterfaceWrapper) GetSkills(c *gin.Context) {
 
@@ -146,6 +384,73 @@ func (siw *ServerInterfaceWrapper) GetSkills(c *gin.Context) {
 	}
 
 	siw.Handler.GetSkills(c)
+}
+
+// CreateSkillCategory operation middleware
+func (siw *ServerInterfaceWrapper) CreateSkillCategory(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateSkillCategory(c)
+}
+
+// DeleteSkillCategory operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSkillCategory(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteSkillCategory(c, id)
+}
+
+// UpdateSkillCategory operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSkillCategory(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id IdParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateSkillCategory(c, id)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -175,8 +480,19 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.POST(options.BaseURL+"/auth/login", wrapper.PostLogin)
+	router.GET(options.BaseURL+"/contact", wrapper.GetContactMessages)
 	router.POST(options.BaseURL+"/contact", wrapper.PostContact)
 	router.GET(options.BaseURL+"/experience", wrapper.GetExperience)
+	router.POST(options.BaseURL+"/experience", wrapper.CreateExperience)
+	router.DELETE(options.BaseURL+"/experience/:id", wrapper.DeleteExperience)
+	router.PUT(options.BaseURL+"/experience/:id", wrapper.UpdateExperience)
 	router.GET(options.BaseURL+"/projects", wrapper.GetProjects)
+	router.POST(options.BaseURL+"/projects", wrapper.CreateProject)
+	router.DELETE(options.BaseURL+"/projects/:id", wrapper.DeleteProject)
+	router.PUT(options.BaseURL+"/projects/:id", wrapper.UpdateProject)
 	router.GET(options.BaseURL+"/skills", wrapper.GetSkills)
+	router.POST(options.BaseURL+"/skills", wrapper.CreateSkillCategory)
+	router.DELETE(options.BaseURL+"/skills/:id", wrapper.DeleteSkillCategory)
+	router.PUT(options.BaseURL+"/skills/:id", wrapper.UpdateSkillCategory)
 }

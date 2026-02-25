@@ -12,7 +12,7 @@ export default function NewSkillPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/skills`, {
+      const res = await fetch(`${API_URL}/skills`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, items: items.split(",").map((s) => s.trim()).filter(Boolean) }),

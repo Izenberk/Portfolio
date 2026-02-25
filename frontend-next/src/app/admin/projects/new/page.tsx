@@ -14,7 +14,7 @@ export default function NewProjectPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/projects`, {
+      const res = await fetch(`${API_URL}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, description, tech: tech.split(",").map((s) => s.trim()).filter(Boolean), github }),

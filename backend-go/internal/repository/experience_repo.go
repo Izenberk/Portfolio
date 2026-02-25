@@ -42,3 +42,17 @@ func (r *ExperienceRepository) GetAll(ctx context.Context) ([]ExperienceItem, er
 	}
 	return results, nil
 }
+
+func (r *ExperienceRepository) Create(ctx context.Context, item ExperienceItem) (*mongo.InsertOneResult, error) {
+	return r.collection.InsertOne(ctx, item)
+}
+
+func (r *ExperienceRepository) Update(ctx context.Context, id primitive.ObjectID, item ExperienceItem) error {
+	_, err := r.collection.ReplaceOne(ctx, bson.M{"_id": id}, item)
+	return err
+}
+
+func (r *ExperienceRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
+	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}

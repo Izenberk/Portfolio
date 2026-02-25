@@ -26,7 +26,6 @@ func NewProjectRepository(db *mongo.Database) *ProjectRepository {
     }
 }
 
-// Return a slice of maps or a simple local struct to avoid importing 'api'
 func (r *ProjectRepository) GetAll(ctx context.Context) ([]bson.M, error) {
     cursor, err := r.collection.Find(ctx, bson.M{})
     if err != nil {
@@ -39,4 +38,18 @@ func (r *ProjectRepository) GetAll(ctx context.Context) ([]bson.M, error) {
         return nil, err
     }
     return projects, nil
+}
+
+func (r *ProjectRepository) Create(ctx context.Context, project bson.M) (*mongo.InsertOneResult, error) {
+    return r.collection.InsertOne(ctx, project)
+}
+
+func (r *ProjectRepository) Update(ctx context.Context, id primitive.ObjectID, update bson.M) error {
+    _, err := r.collection.ReplaceOne(ctx, bson.M{"_id": id}, update)
+    return err
+}
+
+func (r *ProjectRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
+    _, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+    return err
 }

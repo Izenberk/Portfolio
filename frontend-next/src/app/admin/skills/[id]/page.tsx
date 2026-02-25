@@ -11,7 +11,7 @@ export default function EditSkillPage({ params }: { params: Promise<{ id: string
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/skills/${id}`)
+    fetch(`${API_URL}/skills/${id}`)
       .then((res) => res.json())
       .then((data) => { setName(data.name ?? ""); setItems((data.items ?? []).join(", ")); })
       .catch(() => {})
@@ -22,7 +22,7 @@ export default function EditSkillPage({ params }: { params: Promise<{ id: string
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/skills/${id}`, {
+      const res = await fetch(`${API_URL}/skills/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, items: items.split(",").map((s) => s.trim()).filter(Boolean) }),

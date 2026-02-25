@@ -14,7 +14,7 @@ export default function EditExperiencePage({ params }: { params: Promise<{ id: s
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/experience/${id}`)
+    fetch(`${API_URL}/experience/${id}`)
       .then((res) => res.json())
       .then((data) => { setCompany(data.company ?? ""); setRole(data.role ?? ""); setStartDate(data.startDate ?? ""); setEndDate(data.endDate ?? ""); setDescription(data.description ?? ""); })
       .catch(() => {})
@@ -25,7 +25,7 @@ export default function EditExperiencePage({ params }: { params: Promise<{ id: s
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/experience/${id}`, {
+      const res = await fetch(`${API_URL}/experience/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company, role, startDate, endDate: endDate || undefined, description }),

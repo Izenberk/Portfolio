@@ -13,7 +13,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/projects/${id}`)
+    fetch(`${API_URL}/projects/${id}`)
       .then((res) => res.json())
       .then((data) => { setTitle(data.title ?? ""); setDescription(data.description ?? ""); setTech((data.tech ?? []).join(", ")); setGithub(data.github ?? ""); })
       .catch(() => {})
@@ -24,7 +24,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch(`${API_URL}/api/projects/${id}`, {
+      const res = await fetch(`${API_URL}/projects/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, description, tech: tech.split(",").map((s) => s.trim()).filter(Boolean), github }),
