@@ -16,21 +16,21 @@ export default function AboutSection(): JSX.Element {
       >
         <h2 className="text-2xl md:text-3xl font-semibold">About Me</h2>
         <p className="text-foreground/80 leading-relaxed">
-          I’m <span className="font-medium text-primary">Korn-aphichit Ngaopan</span>, a former derivatives trader now
-          pursuing a career as a <span className="font-medium text-primary">full-stack developer</span>. My years in
-          finance sharpened my <span className="font-medium text-primary">detail-oriented mindset</span> and{' '}
-          <span className="font-medium text-primary">analytical thinking</span> — skills I now carry into software
-          development.
+          I&apos;m <span className="font-medium text-primary">Korn-aphichit Ngaopan</span>, an{' '}
+          <span className="font-medium text-primary">AI Automation Architect</span> and{' '}
+          <span className="font-medium text-primary">Full-Stack Developer</span>. Transitioning from{' '}
+          <span className="font-medium text-primary">financial trading and data engineering</span>, I now architect{' '}
+          <span className="font-medium text-primary">agentic workflows</span> and scalable applications with a focus on
+          system integrity and clean code.
         </p>
         <p className="text-foreground/80 leading-relaxed">
-          My programming journey began with <span className="font-medium text-primary">self-motivated learning</span>,
-          starting with Python in university and later advanced programming during my Master’s. After realizing I was
-          more inspired by building systems than following markets, I joined Generation Thailand’s Junior Software
-          Developer Bootcamp. Today, I focus on building <span className="font-medium text-primary">responsive UIs</span>,{' '}
-          <span className="font-medium text-primary">clean APIs</span>, and{' '}
-          <span className="font-medium text-primary">scalable solutions</span>, while continuing to explore my interests in{' '}
-          <span className="font-medium text-primary">data</span> and{' '}
-          <span className="font-medium text-primary">cybersecurity</span>.
+          I prioritize <span className="font-medium text-primary">production-level design</span> — SOLID principles,
+          robust error handling, and security in every project. My background in{' '}
+          <span className="font-medium text-primary">PySpark, SQL, and Airflow</span> helps me build data-aware
+          applications, while my current focus is on{' '}
+          <span className="font-medium text-primary">Go backend services</span>,{' '}
+          <span className="font-medium text-primary">Kubernetes orchestration</span>, and building{' '}
+          <span className="font-medium text-primary">autonomous AI agents</span> using n8n and MCP.
         </p>
       </motion.div>
     </Section>

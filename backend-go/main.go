@@ -81,6 +81,10 @@ func main() {
         },
     })
 
-    log.Println("🚀 Portfolio Server starting on http://localhost:8080")
-    r.Run(":8080")
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+    log.Printf("Portfolio server starting on port %s", port)
+    r.Run(":" + port)
 }

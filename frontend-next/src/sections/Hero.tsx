@@ -22,7 +22,7 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             >
             <span className="text-foreground/80 text-sm py-2 flex justify-center">
-                FAST LEARNER • GROWTH MINDSET • FULL-STACK DEVELOPMENT
+                AI AUTOMATION • FULL-STACK DEVELOPMENT • CLOUD-NATIVE
             </span>
 
             <motion.h1
@@ -31,7 +31,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
             >
-                Growing Every Day as a{" "}
+                AI Automation Architect &{" "}
                 <AuroraText colors={["#18337D", "#2C5DE3"]}>
                 Full-Stack Developer
             </AuroraText>
@@ -43,9 +43,10 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
             >
-                Hi! I&apos;m Korn — a developer with a fast-learning mindset, eager to grow in
-                full-stack development. I craft responsive UIs and scalable backends while
-                continuously expanding my skills and adapting to new challenges.
+                Hi! I&apos;m Korn — a full-stack developer and AI automation architect
+                with a growth mindset and passion for continuous learning. I build
+                agentic workflows and scalable applications, always exploring new
+                technologies to sharpen my craft.
             </motion.p>
 
             <motion.div
@@ -83,14 +84,14 @@ export default function Hero() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <div className="flex flex-wrap justify-center gap-8 mt-10">
             {[
-                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg", label: "TypeScript" },
-                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", label: "React" },
+                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original-wordmark.svg", label: "Go" },
+                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", label: "Next.js", extraClass: "invert" },
+                { src: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/n8n.svg", label: "n8n", extraClass: "invert" },
                 { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", label: "Node.js" },
-                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", label: "Express", extraClass: "invert" },
                 { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg", label: "MongoDB" },
-                { src: "https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg", label: "Tailwind" },
-                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg", label: "Git" },
                 { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", label: "Docker" },
+                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg", label: "K8s" },
+                { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg", label: "Linux" },
             ].map(({ src, label, extraClass }) => (
                 <div key={label} className="flex flex-col items-center text-center text-sm">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
