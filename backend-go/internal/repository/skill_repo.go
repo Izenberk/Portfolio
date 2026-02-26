@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type SkillRepository struct {
@@ -22,6 +23,7 @@ type SkillCategory struct {
 	ID    primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
 	Title string             `bson:"title"         json:"title"`
 	Items []SkillItem        `bson:"items"         json:"items"`
+	Order int                `bson:"order"         json:"order"`
 }
 
 func NewSkillRepository(db *mongo.Database) *SkillRepository {
@@ -31,7 +33,8 @@ func NewSkillRepository(db *mongo.Database) *SkillRepository {
 }
 
 func (r *SkillRepository) GetAll(ctx context.Context) ([]SkillCategory, error) {
-	cursor, err := r.collection.Find(ctx, bson.M{})
+	opts := options.Find().SetSort(bson.D{{Key: "order", Value: 1}})
+	cursor, err := r.collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -55,5 +58,10 @@ func (r *SkillRepository) Update(ctx context.Context, id primitive.ObjectID, cat
 
 func (r *SkillRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}
+
+func (r *SkillRepository) UpdateOrder(ctx context.Context, id primitive.ObjectID, order int) error {
+	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"order": order}})
 	return err
 }

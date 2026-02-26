@@ -80,7 +80,20 @@ export default function ProjectsPage() {
       setProjects((items) => {
         const oldIndex = items.findIndex((i) => i._id === active.id);
         const newIndex = items.findIndex((i) => i._id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const reordered = arrayMove(items, oldIndex, newIndex);
+
+        // Save new order to backend
+        const token = localStorage.getItem("admin_token");
+        fetch(`${API_URL}/projects/reorder`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(reordered.map((p, i) => ({ id: p._id, order: i }))),
+        });
+
+        return reordered;
       });
     }
   }

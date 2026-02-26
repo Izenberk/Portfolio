@@ -83,7 +83,19 @@ export default function ExperiencePage() {
       setItems((prev) => {
         const oldIndex = prev.findIndex((i) => i._id === active.id);
         const newIndex = prev.findIndex((i) => i._id === over.id);
-        return arrayMove(prev, oldIndex, newIndex);
+        const reordered = arrayMove(prev, oldIndex, newIndex);
+
+        const token = localStorage.getItem("admin_token");
+        fetch(`${API_URL}/experience/reorder`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(reordered.map((e, i) => ({ id: e._id, order: i }))),
+        });
+
+        return reordered;
       });
     }
   }

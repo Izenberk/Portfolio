@@ -78,6 +78,13 @@ func main() {
         },
     })
 
+    // --- 3. MANUAL REORDER ROUTES (protected by JWT) ---
+    reorder := r.Group("/")
+    reorder.Use(api.JWTAuthMiddleware())
+    reorder.PUT("/projects/reorder", server.ReorderProjects)
+    reorder.PUT("/skills/reorder", server.ReorderSkills)
+    reorder.PUT("/experience/reorder", server.ReorderExperience)
+
     log.Println("🚀 Portfolio Server starting on http://localhost:8080")
     r.Run(":8080")
 }

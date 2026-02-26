@@ -5,9 +5,9 @@ import (
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/bson/primitive"
     "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// We define a local DB model to handle BSON tags specifically for Mongo
 type DBProject struct {
     ID      primitive.ObjectID  `bson:"_id,omitempty"`
     Title   string              `bson:"title"`
@@ -27,7 +27,8 @@ func NewProjectRepository(db *mongo.Database) *ProjectRepository {
 }
 
 func (r *ProjectRepository) GetAll(ctx context.Context) ([]bson.M, error) {
-    cursor, err := r.collection.Find(ctx, bson.M{})
+    opts := options.Find().SetSort(bson.D{{Key: "order", Value: 1}})
+    cursor, err := r.collection.Find(ctx, bson.M{}, opts)
     if err != nil {
         return nil, err
     }
@@ -51,5 +52,10 @@ func (r *ProjectRepository) Update(ctx context.Context, id primitive.ObjectID, u
 
 func (r *ProjectRepository) Delete(ctx context.Context, id primitive.ObjectID) error {
     _, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+    return err
+}
+
+func (r *ProjectRepository) UpdateOrder(ctx context.Context, id primitive.ObjectID, order int) error {
+    _, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"order": order}})
     return err
 }

@@ -80,7 +80,19 @@ export default function SkillsPage() {
       setSkills((items) => {
         const oldIndex = items.findIndex((i) => i._id === active.id);
         const newIndex = items.findIndex((i) => i._id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const reordered = arrayMove(items, oldIndex, newIndex);
+
+        const token = localStorage.getItem("admin_token");
+        fetch(`${API_URL}/skills/reorder`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(reordered.map((s, i) => ({ id: s._id, order: i }))),
+        });
+
+        return reordered;
       });
     }
   }

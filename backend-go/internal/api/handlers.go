@@ -303,3 +303,64 @@ func (s *Server) DeleteExperience(c *gin.Context, id IdParam) {
 
 	c.JSON(http.StatusOK, MessageResponse{Message: "Experience deleted"})
 }
+
+// ─── Reorder (manual routes, not in OpenAPI) ───
+
+type ReorderItem struct {
+	ID    string `json:"id"`
+	Order int    `json:"order"`
+}
+
+func (s *Server) ReorderProjects(c *gin.Context) {
+	var items []ReorderItem
+	if err := c.ShouldBindJSON(&items); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	for _, item := range items {
+		objID, err := primitive.ObjectIDFromHex(item.ID)
+		if err != nil {
+			continue
+		}
+		s.Repo.UpdateOrder(c.Request.Context(), objID, item.Order)
+	}
+
+	c.JSON(http.StatusOK, MessageResponse{Message: "Order updated"})
+}
+
+func (s *Server) ReorderSkills(c *gin.Context) {
+	var items []ReorderItem
+	if err := c.ShouldBindJSON(&items); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	for _, item := range items {
+		objID, err := primitive.ObjectIDFromHex(item.ID)
+		if err != nil {
+			continue
+		}
+		s.SkillRepo.UpdateOrder(c.Request.Context(), objID, item.Order)
+	}
+
+	c.JSON(http.StatusOK, MessageResponse{Message: "Order updated"})
+}
+
+func (s *Server) ReorderExperience(c *gin.Context) {
+	var items []ReorderItem
+	if err := c.ShouldBindJSON(&items); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	for _, item := range items {
+		objID, err := primitive.ObjectIDFromHex(item.ID)
+		if err != nil {
+			continue
+		}
+		s.ExpRepo.UpdateOrder(c.Request.Context(), objID, item.Order)
+	}
+
+	c.JSON(http.StatusOK, MessageResponse{Message: "Order updated"})
+}
