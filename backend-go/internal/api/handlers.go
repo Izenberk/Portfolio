@@ -304,12 +304,7 @@ func (s *Server) DeleteExperience(c *gin.Context, id IdParam) {
 	c.JSON(http.StatusOK, MessageResponse{Message: "Experience deleted"})
 }
 
-// ─── Reorder (manual routes, not in OpenAPI) ───
-
-type ReorderItem struct {
-	ID    string `json:"id"`
-	Order int    `json:"order"`
-}
+// ─── Reorder ───
 
 func (s *Server) ReorderProjects(c *gin.Context) {
 	var items []ReorderItem
@@ -319,7 +314,7 @@ func (s *Server) ReorderProjects(c *gin.Context) {
 	}
 
 	for _, item := range items {
-		objID, err := primitive.ObjectIDFromHex(item.ID)
+		objID, err := primitive.ObjectIDFromHex(item.Id)
 		if err != nil {
 			continue
 		}
@@ -337,7 +332,7 @@ func (s *Server) ReorderSkills(c *gin.Context) {
 	}
 
 	for _, item := range items {
-		objID, err := primitive.ObjectIDFromHex(item.ID)
+		objID, err := primitive.ObjectIDFromHex(item.Id)
 		if err != nil {
 			continue
 		}
@@ -355,7 +350,7 @@ func (s *Server) ReorderExperience(c *gin.Context) {
 	}
 
 	for _, item := range items {
-		objID, err := primitive.ObjectIDFromHex(item.ID)
+		objID, err := primitive.ObjectIDFromHex(item.Id)
 		if err != nil {
 			continue
 		}

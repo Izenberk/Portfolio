@@ -67,6 +67,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
 
+  /projects/reorder:
+    put:
+      summary: Reorder projects
+      operationId: reorderProjects
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReorderItem'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
   /projects/{id}:
     put:
       summary: Update a project
@@ -136,6 +158,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Experience'
 
+  /experience/reorder:
+    put:
+      summary: Reorder experience entries
+      operationId: reorderExperience
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReorderItem'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
   /experience/{id}:
     put:
       summary: Update an experience entry
@@ -204,6 +248,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillCategory'
+
+  /skills/reorder:
+    put:
+      summary: Reorder skill categories
+      operationId: reorderSkills
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReorderItem'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
 
   /skills/{id}:
     put:
@@ -310,9 +376,9 @@ components:
     # ─── Projects ───
     Project:
       type: object
-      required: [id, slug, title, summary, stack, links]
+      required: [_id, slug, title, summary, stack, links]
       properties:
-        id:
+        _id:
           type: string
           example: "65b2f1234567890abcdef123"
         slug: { type: string }
@@ -332,9 +398,9 @@ components:
     # ─── Experience ───
     Experience:
       type: object
-      required: [id, role, company, start]
+      required: [_id, role, company, start]
       properties:
-        id: { type: string }
+        _id: { type: string }
         role: { type: string }
         company: { type: string }
         url: { type: string }
@@ -357,11 +423,19 @@ components:
 
     SkillCategory:
       type: object
-      required: [id, title]
+      required: [_id, title]
       properties:
-        id: { type: string }
+        _id: { type: string }
         title: { type: string }
         items: { type: array, items: { $ref: '#/components/schemas/SkillItem' } }
+        order: { type: integer }
+
+    # ─── Reorder ───
+    ReorderItem:
+      type: object
+      required: [id, order]
+      properties:
+        id: { type: string }
         order: { type: integer }
 
     # ─── Auth User ───

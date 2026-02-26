@@ -26,16 +26,16 @@ type ContactRequest struct {
 
 // Experience defines model for Experience.
 type Experience struct {
-	Company     string    `json:"company"`
-	Description *[]string `json:"description,omitempty"`
-	End         *string   `json:"end,omitempty"`
-	Id          string    `json:"id"`
-	Location    *string   `json:"location,omitempty"`
-	Order       *int      `json:"order,omitempty"`
-	Role        string    `json:"role"`
-	Start       string    `json:"start"`
-	Tags        *[]string `json:"tags,omitempty"`
-	Url         *string   `json:"url,omitempty"`
+	UnderscoreId string    `json:"_id"`
+	Company      string    `json:"company"`
+	Description  *[]string `json:"description,omitempty"`
+	End          *string   `json:"end,omitempty"`
+	Location     *string   `json:"location,omitempty"`
+	Order        *int      `json:"order,omitempty"`
+	Role         string    `json:"role"`
+	Start        string    `json:"start"`
+	Tags         *[]string `json:"tags,omitempty"`
+	Url          *string   `json:"url,omitempty"`
 }
 
 // LoginRequest defines model for LoginRequest.
@@ -56,9 +56,9 @@ type MessageResponse struct {
 
 // Project defines model for Project.
 type Project struct {
+	UnderscoreId string    `json:"_id"`
 	Contributors *string   `json:"contributors,omitempty"`
 	Details      *[]string `json:"details,omitempty"`
-	Id           string    `json:"id"`
 	Image        *string   `json:"image,omitempty"`
 	Links        struct {
 		Demo *string `json:"demo,omitempty"`
@@ -71,12 +71,18 @@ type Project struct {
 	Title   string   `json:"title"`
 }
 
+// ReorderItem defines model for ReorderItem.
+type ReorderItem struct {
+	Id    string `json:"id"`
+	Order int    `json:"order"`
+}
+
 // SkillCategory defines model for SkillCategory.
 type SkillCategory struct {
-	Id    string       `json:"id"`
-	Items *[]SkillItem `json:"items,omitempty"`
-	Order *int         `json:"order,omitempty"`
-	Title string       `json:"title"`
+	UnderscoreId string       `json:"_id"`
+	Items        *[]SkillItem `json:"items,omitempty"`
+	Order        *int         `json:"order,omitempty"`
+	Title        string       `json:"title"`
 }
 
 // SkillItem defines model for SkillItem.
@@ -90,6 +96,15 @@ type SkillItem struct {
 // IdParam defines model for IdParam.
 type IdParam = string
 
+// ReorderExperienceJSONBody defines parameters for ReorderExperience.
+type ReorderExperienceJSONBody = []ReorderItem
+
+// ReorderProjectsJSONBody defines parameters for ReorderProjects.
+type ReorderProjectsJSONBody = []ReorderItem
+
+// ReorderSkillsJSONBody defines parameters for ReorderSkills.
+type ReorderSkillsJSONBody = []ReorderItem
+
 // PostLoginJSONRequestBody defines body for PostLogin for application/json ContentType.
 type PostLoginJSONRequestBody = LoginRequest
 
@@ -99,17 +114,26 @@ type PostContactJSONRequestBody = ContactRequest
 // CreateExperienceJSONRequestBody defines body for CreateExperience for application/json ContentType.
 type CreateExperienceJSONRequestBody = Experience
 
+// ReorderExperienceJSONRequestBody defines body for ReorderExperience for application/json ContentType.
+type ReorderExperienceJSONRequestBody = ReorderExperienceJSONBody
+
 // UpdateExperienceJSONRequestBody defines body for UpdateExperience for application/json ContentType.
 type UpdateExperienceJSONRequestBody = Experience
 
 // CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
 type CreateProjectJSONRequestBody = Project
 
+// ReorderProjectsJSONRequestBody defines body for ReorderProjects for application/json ContentType.
+type ReorderProjectsJSONRequestBody = ReorderProjectsJSONBody
+
 // UpdateProjectJSONRequestBody defines body for UpdateProject for application/json ContentType.
 type UpdateProjectJSONRequestBody = Project
 
 // CreateSkillCategoryJSONRequestBody defines body for CreateSkillCategory for application/json ContentType.
 type CreateSkillCategoryJSONRequestBody = SkillCategory
+
+// ReorderSkillsJSONRequestBody defines body for ReorderSkills for application/json ContentType.
+type ReorderSkillsJSONRequestBody = ReorderSkillsJSONBody
 
 // UpdateSkillCategoryJSONRequestBody defines body for UpdateSkillCategory for application/json ContentType.
 type UpdateSkillCategoryJSONRequestBody = SkillCategory
@@ -131,6 +155,9 @@ type ServerInterface interface {
 	// Create a new experience entry
 	// (POST /experience)
 	CreateExperience(c *gin.Context)
+	// Reorder experience entries
+	// (PUT /experience/reorder)
+	ReorderExperience(c *gin.Context)
 	// Delete an experience entry
 	// (DELETE /experience/{id})
 	DeleteExperience(c *gin.Context, id IdParam)
@@ -143,6 +170,9 @@ type ServerInterface interface {
 	// Create a new project
 	// (POST /projects)
 	CreateProject(c *gin.Context)
+	// Reorder projects
+	// (PUT /projects/reorder)
+	ReorderProjects(c *gin.Context)
 	// Delete a project
 	// (DELETE /projects/{id})
 	DeleteProject(c *gin.Context, id IdParam)
@@ -155,6 +185,9 @@ type ServerInterface interface {
 	// Create a new skill category
 	// (POST /skills)
 	CreateSkillCategory(c *gin.Context)
+	// Reorder skill categories
+	// (PUT /skills/reorder)
+	ReorderSkills(c *gin.Context)
 	// Delete a skill category
 	// (DELETE /skills/{id})
 	DeleteSkillCategory(c *gin.Context, id IdParam)
@@ -241,6 +274,21 @@ func (siw *ServerInterfaceWrapper) CreateExperience(c *gin.Context) {
 	siw.Handler.CreateExperience(c)
 }
 
+// ReorderExperience operation middleware
+func (siw *ServerInterfaceWrapper) ReorderExperience(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ReorderExperience(c)
+}
+
 // DeleteExperience operation middleware
 func (siw *ServerInterfaceWrapper) DeleteExperience(c *gin.Context) {
 
@@ -321,6 +369,21 @@ func (siw *ServerInterfaceWrapper) CreateProject(c *gin.Context) {
 	siw.Handler.CreateProject(c)
 }
 
+// ReorderProjects operation middleware
+func (siw *ServerInterfaceWrapper) ReorderProjects(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ReorderProjects(c)
+}
+
 // DeleteProject operation middleware
 func (siw *ServerInterfaceWrapper) DeleteProject(c *gin.Context) {
 
@@ -399,6 +462,21 @@ func (siw *ServerInterfaceWrapper) CreateSkillCategory(c *gin.Context) {
 	}
 
 	siw.Handler.CreateSkillCategory(c)
+}
+
+// ReorderSkills operation middleware
+func (siw *ServerInterfaceWrapper) ReorderSkills(c *gin.Context) {
+
+	c.Set(BearerAuthScopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ReorderSkills(c)
 }
 
 // DeleteSkillCategory operation middleware
@@ -485,14 +563,17 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/contact", wrapper.PostContact)
 	router.GET(options.BaseURL+"/experience", wrapper.GetExperience)
 	router.POST(options.BaseURL+"/experience", wrapper.CreateExperience)
+	router.PUT(options.BaseURL+"/experience/reorder", wrapper.ReorderExperience)
 	router.DELETE(options.BaseURL+"/experience/:id", wrapper.DeleteExperience)
 	router.PUT(options.BaseURL+"/experience/:id", wrapper.UpdateExperience)
 	router.GET(options.BaseURL+"/projects", wrapper.GetProjects)
 	router.POST(options.BaseURL+"/projects", wrapper.CreateProject)
+	router.PUT(options.BaseURL+"/projects/reorder", wrapper.ReorderProjects)
 	router.DELETE(options.BaseURL+"/projects/:id", wrapper.DeleteProject)
 	router.PUT(options.BaseURL+"/projects/:id", wrapper.UpdateProject)
 	router.GET(options.BaseURL+"/skills", wrapper.GetSkills)
 	router.POST(options.BaseURL+"/skills", wrapper.CreateSkillCategory)
+	router.PUT(options.BaseURL+"/skills/reorder", wrapper.ReorderSkills)
 	router.DELETE(options.BaseURL+"/skills/:id", wrapper.DeleteSkillCategory)
 	router.PUT(options.BaseURL+"/skills/:id", wrapper.UpdateSkillCategory)
 }

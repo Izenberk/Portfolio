@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"github.com/Izenberk/Portfolio/internal/api"
 	"github.com/Izenberk/Portfolio/internal/db"
 	"github.com/Izenberk/Portfolio/internal/repository"
 	"github.com/gin-gonic/gin"
-    "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -37,12 +38,14 @@ func main() {
     contactRepo := repository.NewContactRepository(database)
     server := api.NewServer(repo, skillRepo, expRepo, contactRepo)
 
+    corsOrigin := os.Getenv("CORS_ORIGIN")
+    if corsOrigin == "" {
+        corsOrigin = "http://localhost:3000"
+    }
+
     r := gin.Default()
-    // --- 1. PLUG IN CORS MIDDLEWARE HERE ---
     r.Use(func(c *gin.Context) {
-        // In dev, you can use "*" to allow everything,
-        // but localhost:3000 is safer and more professional!
-        c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000") 
+        c.Writer.Header().Set("Access-Control-Allow-Origin", corsOrigin)
         c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
         c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
@@ -77,13 +80,6 @@ func main() {
             },
         },
     })
-
-    // --- 3. MANUAL REORDER ROUTES (protected by JWT) ---
-    reorder := r.Group("/")
-    reorder.Use(api.JWTAuthMiddleware())
-    reorder.PUT("/projects/reorder", server.ReorderProjects)
-    reorder.PUT("/skills/reorder", server.ReorderSkills)
-    reorder.PUT("/experience/reorder", server.ReorderExperience)
 
     log.Println("🚀 Portfolio Server starting on http://localhost:8080")
     r.Run(":8080")
