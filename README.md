@@ -1,41 +1,48 @@
----
+# Portfolio
 
-## 🎯 Current Task & Next Steps
+Personal portfolio website with an admin dashboard for managing skills, projects, and experience.
 
-### **Phase 1: API Setup & n8n Integration**
+## Tech Stack
 
-The immediate task is to establish the backend foundation for the contact form functionality.
+- **Backend:** Go (Gin), MongoDB
+- **Frontend:** Next.js, TypeScript, Tailwind CSS
+- **API Spec:** OpenAPI 3.0 (`api/openapi.yaml`)
+- **Deployment:** Render (backend via Docker), Vercel (frontend)
 
-1.  **Define API Endpoint:** Create a `ContactModule` in NestJS (`apps/api`) with a **POST** endpoint at `/api/contact`.
-2.  **Database Connection:** Implement connection to MongoDB via Mongoose within NestJS.
-3.  **Core Logic:** This endpoint must perform two critical, professional-level actions:
-    * **A. Persistence:** Safely save the submission data to the MongoDB database.
-    * **B. Webhook Trigger:** Securely send a POST request (the n8n Webhook) to initiate the automation workflow.
+## Project Structure
 
-### **Phase 2: Frontend Integration**
+```
+backend-go/       # Go API server (Gin + MongoDB)
+frontend-next/    # Next.js frontend & admin dashboard
+api/              # OpenAPI specification
+```
 
-1.  **Component Migration:** Migrate existing portfolio UI components from the old codebase into the Next.js `apps/web` structure.
-2.  **Form Hookup:** Re-implement the Contact Form component to submit data to the new **NestJS API** endpoint (`/api/contact`).
+## Local Development
 
----
+### Prerequisites
 
-## ⚙️ Local Development Setup
+- Go 1.21+
+- Node.js 18+
+- MongoDB instance (local or Atlas)
 
-To run both the frontend and backend concurrently:
+### Backend
 
-1.  **Install Dependencies (Root):**
-    ```bash
-    pnpm install
-    ```
+```bash
+cd backend-go
+cp .env.example .env  # configure MONGO_URI, JWT_SECRET, etc.
+go run main.go
+# Starts on http://localhost:8080
+```
 
-2.  **Start the Backend (API):**
-    ```bash
-    pnpm run --filter api start:dev
-    # NestJS starts on http://localhost:3001
-    ```
+### Frontend
 
-3.  **Start the Frontend (Web):**
-    ```bash
-    pnpm run --filter web dev
-    # Next.js starts on http://localhost:3000
-    ```
+```bash
+cd frontend-next
+npm install
+npm run dev
+# Starts on http://localhost:3000
+```
+
+## Legacy
+
+The previous NestJS/TypeScript monorepo codebase is preserved in the `legacy/` directory.
