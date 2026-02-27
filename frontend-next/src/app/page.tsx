@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import Navbar from "@/components/layout/Navbar";
+
+export const dynamic = "force-dynamic";
 import ScrollToTopOnLoad from "@/components/layout/ScrollToTopOnLoad";
 import Hero from "@/sections/Hero";
 import AboutSection from "@/sections/About";
