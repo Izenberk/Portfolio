@@ -1,4 +1,5 @@
 import { getProjects, getSkills, getExperience } from "@/lib/api";
+import { API_URL } from "@/lib/config";
 import type { Project } from "@/types/project";
 import type { SkillCategory, ExperienceItem } from "@/types/sections";
 import SkillsSection from "@/sections/Skills";
@@ -13,20 +14,25 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function fetchWithRetry(): Promise<
   [Project[], SkillCategory[], ExperienceItem[]]
 > {
+  console.log(`[DataSections] API_URL = ${API_URL}`);
+
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
+      console.log(`[DataSections] attempt ${attempt + 1}/${MAX_RETRIES + 1}`);
       const [projects, skills, experience] = await Promise.all([
         getProjects(),
         getSkills(),
         getExperience(),
       ]);
 
+      console.log(`[DataSections] fetched: ${projects.length} projects, ${skills.length} skills, ${experience.length} experience`);
+
       // Backend responded — return data
       if (projects.length || skills.length || experience.length) {
         return [projects, skills, experience];
       }
-    } catch {
-      // Backend not ready yet
+    } catch (err) {
+      console.error(`[DataSections] attempt ${attempt + 1} failed:`, err instanceof Error ? err.message : err);
     }
 
     // Don't sleep after the last attempt
@@ -36,6 +42,7 @@ async function fetchWithRetry(): Promise<
   }
 
   // All retries exhausted — render with empty data
+  console.warn("[DataSections] all retries exhausted, rendering empty");
   return [[], [], []];
 }
 
